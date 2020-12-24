@@ -26,9 +26,27 @@ void Game::Init()
 
 	while (!glfwWindowShouldClose(window.container)) 
 	{
+		// Clearing
 		glClear(GL_COLOR_BUFFER_BIT);
-		glfwSwapBuffers(window.container);
+		
+		// Drawing - Triangle
+		glBegin(GL_TRIANGLES);
+			glVertex2f(-0.5f, -0.5f);
+			glVertex2f(0.0f, 0.5f);
+			glVertex2f(0.5f, -0.5f);
+		glEnd();
+
+		// Drawing - Quadralatral
+		glBegin(GL_QUADS);
+			glVertex2f(-0.3f, -0.3f);
+			glVertex2f(-0.3f, 0.3f);
+			glVertex2f(0.3f, 0.3f);
+			glVertex2f(0.3f, -0.3f);
+		glEnd();
+
+		// Update
 		glfwPollEvents();
+		glfwSwapBuffers(window.container);
 	}
 
 	glfwTerminate();
@@ -46,7 +64,7 @@ Window Game::CreateWindow(Logger* logger)
 {
 	logger->Info("Creating window");
 	Window window;
-	window.container = glfwCreateWindow(640, 480, "Title", NULL, NULL);
+	window.container = glfwCreateWindow(800, 600, "Title", NULL, NULL);
 	window.logger = logger;
 	return window;
 }
