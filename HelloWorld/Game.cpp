@@ -1,8 +1,20 @@
 #include "GLFW/glfw3.h"
+#include <iostream>
 
 #include "Engine/Renderer/Window.h"
 #include "Log.h"
 #include "Game.h"
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	if (key == GLFW_KEY_E && action == GLFW_PRESS) {
+		std::cout << "E is being pressed" << std::endl;
+	}
+}
+
+static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	std::cout << xpos << "::" << ypos << std::endl;
+}
 
 void Game::Init()
 {
@@ -23,6 +35,9 @@ void Game::Init()
 	}
 
 	glfwMakeContextCurrent(window.container);
+
+	glfwSetKeyCallback(window.container, key_callback);
+	glfwSetCursorPosCallback(window.container, cursor_position_callback);
 
 	while (!glfwWindowShouldClose(window.container)) 
 	{
