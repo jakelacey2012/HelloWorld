@@ -5,19 +5,9 @@
 #include "Log.h"
 #include "Game.h"
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	if (key == GLFW_KEY_E && action == GLFW_PRESS) {
-		std::cout << "E is being pressed" << std::endl;
-	}
-}
-
-static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
-{
-	std::cout << xpos << "::" << ypos << std::endl;
-}
-
 void Game::Init()
 {
+	e = false;
 	Logger logger = CreateLogger();
 	
 	if (!glfwInit()) 
@@ -35,21 +25,24 @@ void Game::Init()
 	}
 
 	glfwMakeContextCurrent(window.container);
+	glfwSetWindowUserPointer(window.container, this);
 
-	glfwSetKeyCallback(window.container, key_callback);
-	glfwSetCursorPosCallback(window.container, cursor_position_callback);
+	glfwSetKeyCallback(window.container, KeyCallback);
+	glfwSetCursorPosCallback(window.container, CursorPositionCallback);
 
 	while (!glfwWindowShouldClose(window.container)) 
 	{
 		// Clearing
 		glClear(GL_COLOR_BUFFER_BIT);
-		
-		// Drawing - Triangle
-		glBegin(GL_TRIANGLES);
-			glVertex2f(-0.5f, -0.5f);
-			glVertex2f(0.0f, 0.5f);
-			glVertex2f(0.5f, -0.5f);
-		glEnd();
+
+		if (e == true) { // Draw the triangle when e is being pressed.
+			// Drawing - Triangle
+			glBegin(GL_TRIANGLES);
+				glVertex2f(-0.5f, -0.5f);
+				glVertex2f(0.0f, 0.5f);
+				glVertex2f(0.5f, -0.5f);
+			glEnd();
+		}
 
 		// Drawing - Quadralatral
 		glBegin(GL_QUADS);
@@ -82,4 +75,22 @@ Window Game::CreateWindow(Logger* logger)
 	window.container = glfwCreateWindow(800, 600, "Title", NULL, NULL);
 	window.logger = logger;
 	return window;
+}
+
+void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
+{
+	Game* game = (Game*) glfwGetWindowUserPointer(window);
+	if (key == GLFW_KEY_E && action == GLFW_PRESS) {
+		game->e = true;
+		std::cout << "E is being pressed" << std::endl;
+	}
+	if (key == GLFW_KEY_E && action == GLFW_RELEASE) {
+		game->e = false;
+		std::cout << "E is being released" << std::endl;
+	}
+}
+
+void Game::CursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
+{
+	std::cout << xpos << "::" << ypos << std::endl;
 }
